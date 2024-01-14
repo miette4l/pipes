@@ -17,6 +17,18 @@ let squareImages = {
     br: null
 };
 
+// Define the border images and their names
+let borderImages = {
+    left: null,
+    right: null,
+    top: null,
+    bot: null
+};
+
+// Define top & bottom border dimensions
+let borderHeight = 29
+let borderWidth = 31
+
 // Define the possible groupings
 let squares_from_left, end_squares, squares_from_bottom, squares_from_top;
 
@@ -41,14 +53,18 @@ let squareEndingEdges = {
 let randomnessPoints = [];
 
 // Current position variables
-let currentX = 0;
-let currentY;
+let currentX = borderWidth;
+let currentY = borderHeight;
 
 function preload() {
     // Load images and associate them with their names
     for (let squareName in squareImages) {
-        squareImages[squareName] = loadImage('tiles/' + squareName + '.png');
+        squareImages[squareName] = loadImage('images/' + squareName + '.png');
     }
+    for (let borderName in borderImages) {
+        borderImages[borderName] = loadImage('images/' + borderName + '.png');
+    }
+
 }
 
 function filterTilesByPositionAndEdge(tileGroup, currentY) {
@@ -56,7 +72,7 @@ function filterTilesByPositionAndEdge(tileGroup, currentY) {
 
     // If the current Y position is 0, filter out tiles with a top-ending edge
         // If the current Y position is 1, filter out tiles with a top-ending edge from squares_from_left
-    if (currentY === 0) {
+    if (currentY === borderHeight) {
         if (tileGroup === squares_from_left) {
             chooseFrom = [squareImages.horiz, squareImages.ld];
         }
@@ -66,7 +82,7 @@ function filterTilesByPositionAndEdge(tileGroup, currentY) {
     }
     
     // If the current Y position is 7, filter out tiles with a bottom-ending edge from squares_from_left
-    else if (currentY === 6*94) {
+    else if (currentY === borderHeight + 6*94) {
         if (tileGroup === squares_from_left) {
             chooseFrom = [squareImages.horiz, squareImages.lu];
         }
@@ -89,7 +105,7 @@ function setup() {
     let Width = 9 * cellDim;
     let Height = 7 * cellDim;
 
-    createCanvas(Width, Height);
+    createCanvas(Width + 2 * borderWidth, Height + 2 * borderHeight);
     background(220);
 
     // Define the different types of squares based on the attributes
@@ -100,19 +116,33 @@ function setup() {
     // Draw empty squares as the background
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 7; j++) {
-            image(squareImages.empty, i * cellDim, j * cellDim);
+            image(squareImages.empty, (i * cellDim)+borderWidth, (j * cellDim)+borderHeight);
         }
     }
 }
   
   function draw() {
     noLoop();
+    // Draw the border images
+
+    // Draw the top border
+    image(borderImages.top, 0, 0);
+
+    // Draw the left border
+    image(borderImages.left, 0, borderHeight);
+
+    // Draw the right border
+    image(borderImages.right, 9 * 94 + borderWidth, borderHeight);
+
+    // Draw the bottom border
+    image(borderImages.bot, 0, 7 * 94 + borderHeight);
+
     // Draw the image
 
     // RANDOMNESS POINT 1
     // Randomly select an initial y-position from the 7 squares height
     let initialYPos = getRandomInt(1, 7);
-    currentY = (initialYPos-1) * 94;
+    currentY += (initialYPos-1) * 94;
 
     // Save the random number to the randomnessPoints array
     randomnessPoints.push({initialYPos: initialYPos});
@@ -121,7 +151,7 @@ function setup() {
 
     let tileGroup = squares_from_left;
 
-    while (currentX < 94 * 9) {
+    while (currentX < (94 * 9)+borderWidth) {
 
         chooseFrom = filterTilesByPositionAndEdge(tileGroup, currentY);
         console.log('Choose from:', chooseFrom);
