@@ -2,6 +2,8 @@
 
 console.log($fx.hash)
 
+p5.disableFriendlyErrors = true;
+
 // Function to get a random element from an array using fx.rand()
 function getRandomElementFromArray(array) {
     const index = Math.floor($fx.rand() * array.length);
