@@ -1,6 +1,6 @@
 // sketch.js
 
-console.log($fx.hash);
+console.log($fx.hash)
 
 // Function to get a random element from an array using fx.rand()
 function getRandomElementFromArray(array) {
